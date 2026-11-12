@@ -64,7 +64,15 @@ object BankParser {
                 """A/C\s+$ACCT\s+debited\s+by\s+(?<amount>[\d,]+(?:\.\d{1,2})?)\s+on\s+date\s+\w+\s+trf\s+to\s+(?<party>.+?)\s+Refno\s+(?<ref>\d{12})""",
                 RegexOption.IGNORE_CASE
             )
+        ),
+                // Axis: "INR 172.00 debited A/c no. XX1734 10-11-26, 14:46:54 UPI/P2M/631463832138/SWIGGY Not you? ..."
+                Rule(
+                "AXIS", TxnType.DEBIT,
+        Regex(
+            """$AMT\s+debited\s+A/c\s+no\.\s+$ACCT\s+[\d-]+,\s+[\d:]+\s+UPI/\w+/(?<ref>\d{12})/(?<party>.+?)\s+Not you""",
+            RegexOption.IGNORE_CASE
         )
+    )
     )
 
     fun parse(body: String): ParsedTxn? {

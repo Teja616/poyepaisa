@@ -85,4 +85,33 @@ class BankParserTest {
         assertNull(BankParser.parse("123456 is your OTP for txn of Rs.500.00. Do not share."))
         assertNull(BankParser.parse("Get 5% cashback up to Rs.200 on your next payment!"))
     }
+
+    @Test fun axisMerchantPayment() {
+        val r = BankParser.parse(
+            "INR 172.00 debited\nA/c no. XX1734\n10-11-26, 14:46:54\nUPI/P2M/123456789012/SWIGGY\nNot you? SMS BLOCKUPI Cust ID to 919999999999\nAxis Bank"
+        )!!
+        assertEquals(17200L, r.amountPaise)
+        assertEquals(TxnType.DEBIT, r.type)
+        assertEquals("AXIS", r.bank)
+        assertEquals("1734", r.accountLast4)
+        assertEquals("123456789012", r.refNo)
+        assertEquals("SWIGGY", r.counterparty)
+    }
+
+    @Test fun axisPersonTransferWithDoubleSpace() {
+        val r = BankParser.parse(
+            "INR 10.00 debited\nA/c no. XX1734\n19-10-26, 01:08:58\nUPI/P2A/123456789013/JOHN  DOE\nNot you? SMS BLOCKUPI Cust ID to 919999999999\nAxis Bank"
+        )!!
+        assertEquals(1000L, r.amountPaise)
+        assertEquals("123456789013", r.refNo)
+        assertEquals("JOHN DOE", r.counterparty)
+    }
+
+    @Test fun axisMultiWordMerchant() {
+        val r = BankParser.parse(
+            "INR 115.00 debited\nA/c no. XX1734\n19-10-26, 22:12:42\nUPI/P2M/123456789014/RAGAM SUPER MARKET\nNot you? SMS BLOCKUPI Cust ID to 919999999999\nAxis Bank"
+        )!!
+        assertEquals(11500L, r.amountPaise)
+        assertEquals("RAGAM SUPER MARKET", r.counterparty)
+    }
 }

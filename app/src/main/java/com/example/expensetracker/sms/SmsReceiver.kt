@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class SmsReceiver : BroadcastReceiver() {
 
     // Temporary allowlist; we'll replace with your real sender IDs
-    private val allowedSenders = listOf("KOTAK", "PNB", "HDFC","SBI")
+    private val allowedSenders = listOf("KOTAK", "PNB", "HDFC","SBI","AXIS")
     private val filterSenders = false
 
     override fun onReceive(context: Context, intent: Intent) {
